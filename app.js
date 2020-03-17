@@ -21,7 +21,7 @@ var express = require('express'),
 	bodyParser = require("body-parser"), //L.R.
     errorhandler = require('errorhandler'),
     bluemix = require('./config/bluemix'),
-    watson = require('watson-developer-cloud'),
+    watson = require('ibm-watson'),
     path = require('path'),
     // environmental variable points to demo's json config file
     extend = require('util')._extend;
