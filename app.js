@@ -26,7 +26,7 @@ var express = require('express'),
     // environmental variable points to demo's json config file
     extend = require('util')._extend;
 
-const watson = require("ibm-watson")
+const watson = require("ibm-watson");
 const TextToSpeechV1 = require('ibm-watson/text-to-speech/v1');
 const { IamAuthenticator } = require('ibm-watson/auth');
 const LanguageTranslatorV3 = require('ibm-watson/language-translator/v3');
