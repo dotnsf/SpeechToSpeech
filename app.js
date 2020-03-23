@@ -21,10 +21,27 @@ var express = require('express'),
 	bodyParser = require("body-parser"), //L.R.
     errorhandler = require('errorhandler'),
     bluemix = require('./config/bluemix'),
-    watson = require('ibm-watson'),
+    //watson = require('ibm-watson'),
     path = require('path'),
     // environmental variable points to demo's json config file
     extend = require('util')._extend;
+
+const watson = require("ibm-watson")
+const TextToSpeechV1 = require('ibm-watson/text-to-speech/v1');
+const { IamAuthenticator } = require('ibm-watson/auth');
+const LanguageTranslatorV3 = require('ibm-watson/language-translator/v3');
+
+const textToSpeech = new TextToSpeechV1({
+  authenticator: new IamAuthenticator({ apikey: 'TMown1lpgBRLOt1F9rLRMy_tDhS-0G1iG775XwFnt4Ib' }),
+  url: 'https://stream.watsonplatform.net/text-to-speech/api/'
+});
+
+const languageTranslator = new LanguageTranslatorV3({
+  authenticator: new IamAuthenticator({ apikey: 'xN7pIsA6JfnyItWWyj_rBm6ltN5O7IPxkji383jwwDMj' }),
+  url: 'https://gateway.watsonplatform.net/language-translator/api/',
+  version: 'YYYY-MM-DD',
+});
+
 
 // For local development, put username and password in config
 // or store in your environment
@@ -37,7 +54,7 @@ var config = {
 
 // if bluemix credentials exists, then override local
 var credentials = extend(config, bluemix.getServiceCreds('speech_to_text'));
-var authorization = watson.authorization(credentials);
+const authorization = watson.authorization(credentials);
 
 // redirect to https if the app is not running locally
 if (!!process.env.VCAP_SERVICES) {
@@ -77,7 +94,7 @@ var mt_credentials = extend({
   version: 'v2'
 }, bluemix.getServiceCreds('language-translation')); // VCAP_SERVICES
 
-var language_translation = watson.language_translation(mt_credentials);
+//var language_translation = watson.language_translation(mt_credentials);
 
 app.post('/api/translate', function(req, res, next) {
   //console.log('/v2/translate');
@@ -85,7 +102,7 @@ app.post('/api/translate', function(req, res, next) {
   var params = extend({ 'X-WDC-PL-OPT-OUT': req.header('X-WDC-PL-OPT-OUT')}, req.body);
   //console.log(' ---> params == ' + JSON.stringify(params)); //L.R.
   
-  language_translation.translate(params, function(err, models) {
+  languageTranslator.translate(params, function(err, models) {
   if (err)
     return next(err);
   else
@@ -104,7 +121,7 @@ var tts_credentials = extend({
 }, bluemix.getServiceCreds('text_to_speech'));
 
 // Create the service wrappers
-var textToSpeech = watson.text_to_speech(tts_credentials);
+//var textToSpeech = watson.text_to_speech(tts_credentials);
 
 app.get('/synthesize', function(req, res) {
   var transcript = textToSpeech.synthesize(req.query);
