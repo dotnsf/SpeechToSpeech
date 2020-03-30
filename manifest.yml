@@ -8,16 +8,13 @@ declared-services:
     plan: lite
   text-to-speech-service-lite:
     label: text_to_speech
-    plan: lite	
+    plan: lite
 applications:
 - name: SpeechToSpeech
   command: node app.js
-  buildpack: sdk-for-nodejs
   path: .
   memory: 256m
   services:
   - speech-to-text-service-lite
   - language-translation-service-lite
   - text-to-speech-service-lite
-  
-  
