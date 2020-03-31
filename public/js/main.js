@@ -990,7 +990,8 @@ function translate(textContent) {
 		
 		var callData = {
 			model_id: mid,
-			text: textContent
+      text: textContent,
+      target: "en"
 		};
 	
 		var restAPICall = {

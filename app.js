@@ -115,7 +115,7 @@ app.post("/api/translate", function(req, res, next) {
     req.body
   );
   //console.log(' ---> params == ' + JSON.stringify(params)); //L.R.
-
+  console.log(params)
   languageTranslator.translate(params, function(err, models) {
     if (err) return next(err);
     else res.json(models);
