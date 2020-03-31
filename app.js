@@ -26,7 +26,7 @@ var express = require("express"),
   // environmental variable points to demo's json config file
   extend = require("util")._extend;
 
-const AuthorizationV1 = require("ibm-watson/authorization/v1")
+const AuthorizationV1 = require("ibm-watson/authorization/v1");
 const TextToSpeechV1 = require("ibm-watson/text-to-speech/v1");
 const { IamAuthenticator } = require("ibm-watson/auth");
 const LanguageTranslatorV3 = require("ibm-watson/language-translator/v3");
@@ -62,9 +62,8 @@ const authorization = new AuthorizationV1({
   authenticator: new IamAuthenticator({
     apikey: "RBBYL7uhjKAR9N_h4y1361ibfnX4G8qUZa5bpfFtzA7p"
   }),
-  // url: "https://stream.watsonplatform.net/speech-to-text/api"
-  url: 'https://iam.cloud.ibm.com/identity/token'
-})
+  url: "https://stream.watsonplatform.net/speech-to-text/api"
+});
 
 // redirect to https if the app is not running locally
 if (!!process.env.VCAP_SERVICES) {
@@ -82,8 +81,8 @@ if (!!process.env.VCAP_SERVICES) {
 app.use(express.static(path.join(__dirname, "./public")));
 
 // Get token from Watson using your credentials
-app.get("/token", function(req, res) {
-  authorization.getToken( function(err, token) {
+app.get("/token", (req, res) => {
+  authorization.getToken((err, token) => {
     if (err) {
       console.log("error:", err);
       res.status(err.code);
