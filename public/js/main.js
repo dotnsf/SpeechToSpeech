@@ -1006,7 +1006,7 @@ function translate(textContent) {
 	
 		$.ajax(restAPICall)
 			.done(function(data) {
-				var translation = data['translations'][0]['translation'];
+				var translation = data.result['translations'][0]['translation'];
 				$('#translation textarea').val(function(_, val){
 				    var delimiter = val.length > 0 ? ". " : "";
 					return val + delimiter + translation; 
