@@ -62,7 +62,8 @@ const authorization = new AuthorizationV1({
   authenticator: new IamAuthenticator({
     apikey: "RBBYL7uhjKAR9N_h4y1361ibfnX4G8qUZa5bpfFtzA7p"
   }),
-  url: "https://stream.watsonplatform.net/speech-to-text/api"
+  // url: "https://stream.watsonplatform.net/speech-to-text/api"
+  url: 'https://iam.cloud.ibm.com/identity/token'
 })
 
 // redirect to https if the app is not running locally
@@ -82,7 +83,7 @@ app.use(express.static(path.join(__dirname, "./public")));
 
 // Get token from Watson using your credentials
 app.get("/token", function(req, res) {
-  authorization.getToken({ url: credentials.url }, function(err, token) {
+  authorization.getToken( function(err, token) {
     if (err) {
       console.log("error:", err);
       res.status(err.code);
