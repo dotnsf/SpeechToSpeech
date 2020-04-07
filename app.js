@@ -16,7 +16,7 @@
 
 "use strict";
 
-var express = require("express"),
+const express = require("express"),
   app = express(),
   bodyParser = require("body-parser"), //L.R.
   errorhandler = require("errorhandler"),
@@ -31,30 +31,30 @@ const LanguageTranslatorV3 = require("ibm-watson/language-translator/v3");
 
 const textToSpeech = new TextToSpeechV1({
   authenticator: new IamAuthenticator({
-    apikey: "TMown1lpgBRLOt1F9rLRMy_tDhS-0G1iG775XwFnt4Ib"
+    apikey: "TMown1lpgBRLOt1F9rLRMy_tDhS-0G1iG775XwFnt4Ib",
   }),
-  url: "https://stream.watsonplatform.net/text-to-speech/api/"
+  url: "https://stream.watsonplatform.net/text-to-speech/api/",
 });
 
 const languageTranslator = new LanguageTranslatorV3({
   authenticator: new IamAuthenticator({
-    apikey: "xN7pIsA6JfnyItWWyj_rBm6ltN5O7IPxkji383jwwDMj"
+    apikey: "xN7pIsA6JfnyItWWyj_rBm6ltN5O7IPxkji383jwwDMj",
   }),
   url: "https://gateway.watsonplatform.net/language-translator/api/",
-  version: "2020-03-30"
+  version: "2020-03-30",
 });
 
 const authorization = new AuthorizationV1({
   authenticator: new IamAuthenticator({
-    apikey: "RBBYL7uhjKAR9N_h4y1361ibfnX4G8qUZa5bpfFtzA7p"
+    apikey: "RBBYL7uhjKAR9N_h4y1361ibfnX4G8qUZa5bpfFtzA7p",
   }),
-  url: "https://stream.watsonplatform.net/speech-to-text/api"
+  url: "https://stream.watsonplatform.net/speech-to-text/api",
 });
 
 // redirect to https if the app is not running locally
 if (!!process.env.VCAP_SERVICES) {
   app.enable("trust proxy");
-  app.use( (req, res, next) => {
+  app.use((req, res, next) => {
     if (req.secure) {
       next();
     } else {
@@ -82,15 +82,14 @@ app.get("/token", (req, res) => {
 app.use(bodyParser.urlencoded({ extended: false }));
 
 app.post("/api/translate", async (req, res, next) => {
-
-  var params = extend(
+  const params = extend(
     { "X-WDC-PL-OPT-OUT": req.header("X-WDC-PL-OPT-OUT") },
     req.body
   );
   const result = await languageTranslator.translate(params).catch((err) => {
-    return next(err)
-  })
-  res.json(result)
+    return next(err);
+  });
+  res.json(result);
 });
 // ----------------------------------------------------------------------
 
@@ -100,12 +99,12 @@ app.post("/api/translate", async (req, res, next) => {
 
 app.get("/synthesize", async (req, res) => {
   try {
-    req.query["accept"] = "audio/wav"
+    req.query["accept"] = "audio/wav";
     const transcript = await textToSpeech.synthesize(req.query);
-    const audio = transcript.result
-    const repaired = await textToSpeech.repairWavHeaderStream(audio)
-    res.setHeader("Content-Type", "audio/wav")
-    res.send(repaired)
+    const audio = transcript.result;
+    const repaired = await textToSpeech.repairWavHeaderStream(audio);
+    res.setHeader("Content-Type", "audio/wav");
+    res.send(repaired);
   } catch (error) {
     console.log("Synthesize error: ", error);
   }
@@ -117,6 +116,6 @@ app.get("/synthesize", async (req, res) => {
 if (!process.env.VCAP_SERVICES) {
   app.use(errorhandler());
 }
-var port = process.env.VCAP_APP_PORT || 3000;
+const port = process.env.VCAP_APP_PORT || 3000;
 app.listen(port);
 console.log("listening at:", port);
