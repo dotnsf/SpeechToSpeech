@@ -20,8 +20,6 @@ var express = require("express"),
   app = express(),
   bodyParser = require("body-parser"), //L.R.
   errorhandler = require("errorhandler"),
-  bluemix = require("./config/bluemix"),
-  //watson = require('ibm-watson'),
   path = require("path"),
   // environmental variable points to demo's json config file
   extend = require("util")._extend;
@@ -45,18 +43,6 @@ const languageTranslator = new LanguageTranslatorV3({
   url: "https://gateway.watsonplatform.net/language-translator/api/",
   version: "2020-03-30"
 });
-
-// For local development, put username and password in config
-// or store in your environment
-var config = {
-  version: "v1",
-  url: "https://stream.watsonplatform.net/speech-to-text/api",
-  username: "<Your User Name>",
-  password: "<Your Password>"
-};
-
-// if bluemix credentials exists, then override local
-var credentials = extend(config, bluemix.getServiceCreds("speech_to_text"));
 
 const authorization = new AuthorizationV1({
   authenticator: new IamAuthenticator({
@@ -95,50 +81,26 @@ app.get("/token", (req, res) => {
 // ------------------------------- MT ---------------------------------
 app.use(bodyParser.urlencoded({ extended: false }));
 
-var mt_credentials = extend(
-  {
-    url: "https://gateway.watsonplatform.net/language-translator/api",
-    username: "<Your User Name>",
-    password: "<Your Password>",
-    version: "v2"
-  },
-  bluemix.getServiceCreds("language-translation")
-); // VCAP_SERVICES
-
-//var language_translation = watson.language_translation(mt_credentials);
-
-app.post("/api/translate", function(req, res, next) {
-  //console.log('/v2/translate');
+app.post("/api/translate", async (req, res, next) => {
 
   var params = extend(
     { "X-WDC-PL-OPT-OUT": req.header("X-WDC-PL-OPT-OUT") },
     req.body
   );
-  languageTranslator.translate(params, function(err, models) {
-    if (err) return next(err);
-    else res.json(models);
-  });
+  const result = await languageTranslator.translate(params).catch((err) => {
+    return next(err)
+  })
+  res.json(result)
 });
 // ----------------------------------------------------------------------
 
 // L.R.
 // -------------------------------- TTS ---------------------------------
-var tts_credentials = extend(
-  {
-    url: "https://stream.watsonplatform.net/text-to-speech/api",
-    version: "v1",
-    username: "<Your User Name>",
-    password: "<Your Password>"
-  },
-  bluemix.getServiceCreds("text_to_speech")
-);
-
 // Create the service wrappers
 
 app.get("/synthesize", async (req, res) => {
   try {
     req.query["accept"] = "audio/wav"
-    console.log(req.query)
     const transcript = await textToSpeech.synthesize(req.query);
     const audio = transcript.result
     const repaired = await textToSpeech.repairWavHeaderStream(audio)
@@ -147,14 +109,6 @@ app.get("/synthesize", async (req, res) => {
   } catch (error) {
     console.log("Synthesize error: ", error);
   }
-  /** 
-  transcript.on("response", function(response) {
-    if (req.query.download) {
-      response.headers["content-disposition"] =
-        "attachment; filename=transcript.ogg";
-    }
-  });xxx
-  **/
 });
 
 // ----------------------------------------------------------------------
