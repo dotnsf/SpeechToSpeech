@@ -57,7 +57,7 @@ var config = {
 
 // if bluemix credentials exists, then override local
 var credentials = extend(config, bluemix.getServiceCreds("speech_to_text"));
-//const authorization = watson.authorization(credentials);
+
 const authorization = new AuthorizationV1({
   authenticator: new IamAuthenticator({
     apikey: "RBBYL7uhjKAR9N_h4y1361ibfnX4G8qUZa5bpfFtzA7p"
@@ -68,7 +68,7 @@ const authorization = new AuthorizationV1({
 // redirect to https if the app is not running locally
 if (!!process.env.VCAP_SERVICES) {
   app.enable("trust proxy");
-  app.use(function(req, res, next) {
+  app.use( (req, res, next) => {
     if (req.secure) {
       next();
     } else {
@@ -114,8 +114,6 @@ app.post("/api/translate", function(req, res, next) {
     { "X-WDC-PL-OPT-OUT": req.header("X-WDC-PL-OPT-OUT") },
     req.body
   );
-  //console.log(' ---> params == ' + JSON.stringify(params)); //L.R.
-  console.log(params)
   languageTranslator.translate(params, function(err, models) {
     if (err) return next(err);
     else res.json(models);
@@ -136,20 +134,27 @@ var tts_credentials = extend(
 );
 
 // Create the service wrappers
-//var textToSpeech = watson.text_to_speech(tts_credentials);
 
-app.get("/synthesize", function(req, res) {
-  var transcript = textToSpeech.synthesize(req.query);
+app.get("/synthesize", async (req, res) => {
+  try {
+    req.query["accept"] = "audio/wav"
+    console.log(req.query)
+    const transcript = await textToSpeech.synthesize(req.query);
+    const audio = transcript.result
+    const repaired = await textToSpeech.repairWavHeaderStream(audio)
+    res.setHeader("Content-Type", "audio/wav")
+    res.send(repaired)
+  } catch (error) {
+    console.log("Synthesize error: ", error);
+  }
+  /** 
   transcript.on("response", function(response) {
     if (req.query.download) {
       response.headers["content-disposition"] =
         "attachment; filename=transcript.ogg";
     }
-  });
-  transcript.on("error", function(error) {
-    console.log("Synthesize error: ", error);
-  });
-  transcript.pipe(res);
+  });xxx
+  **/
 });
 
 // ----------------------------------------------------------------------
