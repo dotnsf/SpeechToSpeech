@@ -7,7 +7,7 @@ Node.jsはブラウザへクライアントの認証トークンを提供する�
 
 下記のボタンをクリックして、すぐにIBM Cloudでこのアプリケーションを試してみましょう！
 
-[![Deploy to Bluemix](https://bluemix.net/deploy/button.png)](https://bluemix.net/deploy?repository=https://github.com/taijihagino/SpeechToSpeech)
+[![Deploy to Bluemix](https://bluemix.net/deploy/button.png)](https://bluemix.net/deploy?repository=https://github.com/TakumiHongo/SpeechToSpeech)
 
 ## Getting Started
 
@@ -56,47 +56,19 @@ applications:
 IBM Cloudのダッシュボードを開くと、上記の３つのサービスが作成されていることが確認できると思います。
 それぞれの資格情報を作成し、内容を控えておいてください。
 
-5. app.jsを修正します
-
-    作成したSpeech to Text APIの資格情報からUserとPasswordを転記します。
-    ```sh
-    // For local development, put username and password in config
-    // or store in your environment
-    var config = {
-        version: 'v1',
-        url: 'https://stream.watsonplatform.net/speech-to-text/api',
-        username: '<Your User Name>',
-        password: '<Your Password>'
-    };
-    ```
-
-    同様に、Language Translator APIの資格情報とText to Speech APIの資格情報も転記します。
-    ```sh
-    // ------------------------------- MT ---------------------------------
-    app.use(bodyParser.urlencoded({ extended: false }));
-
-    var mt_credentials = extend({
-        url: 'https://gateway.watsonplatform.net/language-translator/api',
-        username: '<Your User Name>',
-        password: '<Your Password>',
-        version: 'v2'
-    }, bluemix.getServiceCreds('language-translation')); // VCAP_SERVICES
-
-    ```
-
-    ```sh
-    // -------------------------------- TTS ---------------------------------
-    var tts_credentials = extend({
-        url: 'https://stream.watsonplatform.net/text-to-speech/api',
-        version: 'v1',
-        username: '<Your User Name>',
-        password: '<Your Password>',
-    }, bluemix.getServiceCreds('text_to_speech'));
-
-    ```
+5. config/default.jsonを修正します
+  ```
+  {
+    "apiKeys": {
+        "languageTranslator": "<language-translator service api key>",
+        "speechToText": "<speech-to-text service api key>",
+        "textToSpeech": "<text-to-speech service api key>"
+    }
+}
+  ```
 
 
-5. アプリケーションを起動します
+6. アプリケーションを起動します
 
 
 
