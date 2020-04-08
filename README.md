@@ -7,7 +7,7 @@ Node.jsはブラウザへクライアントの認証トークンを提供する�
 
 下記のボタンをクリックして、すぐにIBM Cloudでこのアプリケーションを試してみましょう！
 
-[![Deploy to Bluemix](https://bluemix.net/deploy/button.png)](https://bluemix.net/deploy?repository=https://github.com/TakumiHongo/SpeechToSpeech)
+[![IBM Cloud にデプロイ](https://cloud.ibm.com/devops/setup/deploy/button.png)](https://bluemix.net/deploy?repository=https://github.com/TakumiHongo/SpeechToSpeech)
 
 ## Getting Started
 
