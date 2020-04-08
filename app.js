@@ -28,17 +28,18 @@ const AuthorizationV1 = require("ibm-watson/authorization/v1");
 const TextToSpeechV1 = require("ibm-watson/text-to-speech/v1");
 const { IamAuthenticator } = require("ibm-watson/auth");
 const LanguageTranslatorV3 = require("ibm-watson/language-translator/v3");
+const conf = require("config")
 
 const textToSpeech = new TextToSpeechV1({
   authenticator: new IamAuthenticator({
-    apikey: "TMown1lpgBRLOt1F9rLRMy_tDhS-0G1iG775XwFnt4Ib",
+    apikey: conf.get("apiKeys.textToSpeech"),
   }),
   url: "https://stream.watsonplatform.net/text-to-speech/api/",
 });
 
 const languageTranslator = new LanguageTranslatorV3({
   authenticator: new IamAuthenticator({
-    apikey: "xN7pIsA6JfnyItWWyj_rBm6ltN5O7IPxkji383jwwDMj",
+    apikey: conf.get("apiKeys.languageTranslator"),
   }),
   url: "https://gateway.watsonplatform.net/language-translator/api/",
   version: "2020-03-30",
@@ -46,7 +47,7 @@ const languageTranslator = new LanguageTranslatorV3({
 
 const authorization = new AuthorizationV1({
   authenticator: new IamAuthenticator({
-    apikey: "RBBYL7uhjKAR9N_h4y1361ibfnX4G8qUZa5bpfFtzA7p",
+    apikey: conf.get("apiKeys.speechToText"),
   }),
   url: "https://stream.watsonplatform.net/speech-to-text/api",
 });
