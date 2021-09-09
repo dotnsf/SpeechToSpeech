@@ -41,7 +41,7 @@ const languageTranslator = new LanguageTranslatorV3({
   authenticator: new IamAuthenticator({
     apikey: conf.get("apiKeys.languageTranslator"),
   }),
-  url: "https://gateway.watsonplatform.net/language-translator/api/",
+  url: "https://api.us-south.language-translator.watson.cloud.ibm.com/instances/835e4bd2-5a07-47a4-833d-e42ea2704894",
   version: "2020-03-30",
 });
 
@@ -80,7 +80,7 @@ app.get("/token", (req, res) => {
 
 // L.R.
 // ------------------------------- MT ---------------------------------
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: false }));
 
 app.post("/api/translate", async (req, res, next) => {
   const params = extend(
