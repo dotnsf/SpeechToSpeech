@@ -1,6 +1,7 @@
 {
     "apiKeys": {
         "languageTranslator": "<language-translator service api key>",
+        "languageTranslatorURL": "<language-translator service url>",
         "speechToText": "<speech-to-text service api key>",
         "textToSpeech": "<text-to-speech service api key>"
     }
