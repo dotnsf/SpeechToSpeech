@@ -37,11 +37,13 @@ const textToSpeech = new TextToSpeechV1({
   url: "https://stream.watsonplatform.net/text-to-speech/api/",
 });
 
+console.log(conf.get("apiKeys.languageTranslatorURL"))
+
 const languageTranslator = new LanguageTranslatorV3({
   authenticator: new IamAuthenticator({
     apikey: conf.get("apiKeys.languageTranslator"),
   }),
-  url: "https://api.us-south.language-translator.watson.cloud.ibm.com/instances/835e4bd2-5a07-47a4-833d-e42ea2704894",
+  url: conf.get("apiKeys.languageTranslatorURL"),
   version: "2020-03-30",
 });
 
