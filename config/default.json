@@ -1,0 +1,10 @@
+{
+    "apiKeys": {
+        "languageTranslator": "",
+        "languageTranslatorURL": "",
+        "speechToText": "",
+        "speechToTextURL": "",
+        "textToSpeech": "",
+        "textToSpeechURL": ""
+    }
+}
