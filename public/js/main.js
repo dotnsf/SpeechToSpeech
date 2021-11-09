@@ -587,7 +587,7 @@
 
         $(document).ready(function () {
           // Make call to API to try and get token
-          utils.getToken(function (token) {
+          utils.getToken(function (token, serviceURL) {
             window.onbeforeunload = function (e) {
               localStorage.clear();
             };
@@ -597,10 +597,13 @@
               console.error("Attempting to reconnect...");
             }
 
+            window.serviceURL = serviceURL;
+
             var viewContext = {
               currentModel: "en-US_BroadbandModel",
               models: models,
               token: token,
+              serviceURL: serviceURL,
               bufferSize: BUFFERSIZE,
             };
 
@@ -686,7 +689,7 @@
           var sessionPermissionsQueryParam = sessionPermissions ? "0" : "1";
           var url =
             options.serviceURI ||
-            "wss://stream.watsonplatform.net/speech-to-text/api/v1/recognize?access_token=" +
+            window.serviceURL +
               token +
               "&X-WDC-PL-OPT-OUT=" +
               sessionPermissionsQueryParam +
@@ -852,15 +855,16 @@
                 ++hasBeenRunTimes;
                 if (hasBeenRunTimes > 5) {
                   var err = new Error("Cannot reach server");
-                  callback(null, err);
+                  callback(null, null, err);
                   return;
                 }
                 var url = "/token";
                 var tokenRequest = new XMLHttpRequest();
                 tokenRequest.open("GET", url, true);
                 tokenRequest.onload = function (evt) {
+                  const res = JSON.parse(tokenRequest.responseText)
                   var token = tokenRequest.responseText;
-                  callback(token);
+                  callback(res.token, res.serviceURL);
                 };
                 tokenRequest.send();
               },
@@ -877,15 +881,16 @@
               hasBeenRunTimes++;
               if (hasBeenRunTimes > 5) {
                 var err = new Error("Cannot reach server");
-                callback(null, err);
+                callback(null, null, err);
                 return;
               }
               var url = "/token";
               var tokenRequest = new XMLHttpRequest();
               tokenRequest.open("GET", url, true);
               tokenRequest.onload = function (evt) {
+                const res = JSON.parse(tokenRequest.responseText)
                 var token = tokenRequest.responseText;
-                callback(token);
+                callback(res.token, res.serviceURL);
               };
               tokenRequest.send();
             };
