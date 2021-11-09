@@ -34,7 +34,7 @@ const textToSpeech = new TextToSpeechV1({
   authenticator: new IamAuthenticator({
     apikey: conf.get("apiKeys.textToSpeech"),
   }),
-  url: "https://stream.watsonplatform.net/text-to-speech/api/",
+  url: conf.get("apiKeys.textToSpeechURL"), //"https://stream.watsonplatform.net/text-to-speech/api/",
 });
 
 const languageTranslator = new LanguageTranslatorV3({
@@ -69,12 +69,14 @@ app.use(express.static(path.join(__dirname, "./public")));
 
 // Get token from Watson using your credentials
 app.get("/token", (req, res) => {
+  const speechToTextURL = conf.get("apiKeys.speechToTextURL");
+  const wssURL = generateWSSURL(speechToTextURL)
   authorization.getToken((err, token) => {
     if (err) {
       console.log("error:", err);
       res.status(err.code);
     }
-    res.send(token);
+    res.json({token: token, serviceURL: wssURL});
   });
 });
 
@@ -120,3 +122,10 @@ if (!process.env.VCAP_SERVICES) {
 const port = process.env.VCAP_APP_PORT || 3000;
 app.listen(port);
 console.log("listening at:", port);
+
+const generateWSSURL = (speechToTextURL) => {
+  const url = new URL(speechToTextURL);
+  url.protocol = "wss";
+  const wssURL = url.toString() + "/v1/recognize?access_token=";
+  return wssURL
+}
